@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <h1>Dashboard</h1>
+  <p>
+    Добро пожаловать на вашу панель мониторинга. Вы можете <a href="{% url "edit_profile" %}">изменить свой профиль</a> или <a href="{% url "password_change" %}">поменять пароль</a>.
+  </p>
+  
+  <h2>Зарегистрированные мероприятия:</h2>
+  {% if registered_events %}
+    <ul>
+      {% for event_registration in registered_events %}
+        <li><a href="{% url 'event_detail' event_id=event_registration.event.id %}">{{ event_registration.event.name }}</a> ({{ event_registration.event.start_time|date:"d.m.Y H:i" }})</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Вы не зарегистрированы на мероприятия.</p>
+  {% endif %}
+{% endblock %}

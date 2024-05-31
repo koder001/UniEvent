@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <div id="header">
+        <span class="logo">UniEvent</span>
+        {% if request.user.is_authenticated %}
+            <ul class="menu">
+                <li {% if section == "dashboard" %}class="selected"{% endif %}>
+                    <a href="{% url 'dashboard' %}">Моя панель</a>
+                </li>
+                <li {% if section == "room_list" %}class="selected"{% endif %}>
+                    <a href="{% url 'room_list' %}">Помещения</a>
+                </li>
+                <li {% if section == "events" %}class="selected"{% endif %}>
+                    <a href="{% url 'event_list' %}">Мероприятия</a>
+                </li>
+                <li {% if section == "archive" %}class="selected"{% endif %}>
+                    <a href="{% url 'event_archive' %}">Архив</a>
+                </li>
+                {% if request.user.is_staff %}
+                    <li {% if section == "scheduler" %}class="selected"{% endif %}>
+                        <a href="{% url 'create_recurring_event' %}">Расписание</a>
+                    </li>
+                    <li {% if section == "create_event" %}class="selected"{% endif %}>
+                        <a href="{% url 'create_event' %}">Создать мероприятие</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form class="user" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                Привет, {{ request.user.first_name|default:request.user.email }},
+                <button type="submit">Выход</button>
+            </form>
+        {% else %}
+            <span class="user">
+                <a href="{% url 'login' %}">Вход</a>
+            </span>
+        {% endif %}
+    </div>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+    {% block js %}{% endblock %}
+</body>
+</html>

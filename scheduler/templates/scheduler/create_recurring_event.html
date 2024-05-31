@@ -1,0 +1,116 @@
+<!-- scheduler/templates/scheduler/create_recurring_event.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Создание циклического мероприятия{% endblock %}
+
+{% block content %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+  }
+
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .schedule-table th {
+    background-color: #f2f2f2;
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .btn:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<div class="container">
+  <h1>Создание циклического мероприятия</h1>
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="{{ form.room.id_for_label }}">{{ form.room.label }}</label>
+      {{ form.room }}
+    </div>
+    <div class="form-group">
+      <label for="{{ form.week_type.id_for_label }}">{{ form.week_type.label }}</label>
+      {{ form.week_type }}
+    </div>
+
+    <h2>Расписание</h2>
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Понедельник</th>
+          <th>Вторник</th>
+          <th>Среда</th>
+          <th>Четверг</th>
+          <th>Пятница</th>
+          <th>Суббота</th>
+          <th>Воскресенье</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for period, times in periods.items %}
+          <tr>
+            <td><strong>{{ times }}</strong></td>
+            {% for day in days %}
+              <td>
+                <input type="checkbox" name="{{ day }}-{{ period }}" id="{{ day }}-{{ period }}">
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button type="submit" class="btn">Создать мероприятие</button>
+  </form>
+</div>
+{% endblock %}
