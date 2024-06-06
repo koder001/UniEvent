@@ -15,7 +15,7 @@ class ProfileRegistrationForm(forms.ModelForm):
 
 	class Meta:
 		model = UserProfile
-		fields = ['first_name', 'last_name', 'patronymic', 'group_student', 'email', 'photo', 'password', 'password2']
+		fields = ['first_name', 'last_name', 'patronymic', 'group_student', 'year_of_admission', 'email', 'password', 'password2']
 
 	def clean_password2(self):
 		"""Проверяет, совпадают ли пароли."""
@@ -35,4 +35,4 @@ class ProfileRegistrationForm(forms.ModelForm):
 class ProfileEditForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
-		fields = ['first_name', 'last_name', 'patronymic', 'group_student', 'email', 'photo']
+		fields = ['first_name', 'last_name', 'patronymic', 'group_student', 'year_of_admission', 'email']

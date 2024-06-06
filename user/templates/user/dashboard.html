@@ -1,21 +1,144 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Панель управления{% endblock %}
+
+{% block css %}
+<style>
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .dashboard-header form {
+        margin: 0;
+    }
+
+    .dashboard-header button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    p {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+
+    .events-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .events-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .events-list li:hover {
+        background-color: #f9f9f9;
+    }
+
+    .events-list a {
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: bold;
+    }
+
+    .events-list a:hover {
+        text-decoration: underline;
+    }
+
+    .event-time {
+        font-size: 0.9em;
+        color: #777;
+    }
+
+    @media (max-width: 600px) {
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .dashboard-header h1 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .dashboard-header button {
+            width: 100%;
+        }
+
+        .events-list li {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .event-time {
+            margin-top: 5px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-  <h1>Dashboard</h1>
+  <div class="dashboard-header">
+    <h1>Панель управления</h1>
+    <form class="user" method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <button type="submit">Выход</button>
+    </form>
+  </div>
   <p>
     Добро пожаловать на вашу панель мониторинга. Вы можете <a href="{% url "edit_profile" %}">изменить свой профиль</a> или <a href="{% url "password_change" %}">поменять пароль</a>.
   </p>
   
-  <h2>Зарегистрированные мероприятия:</h2>
-  {% if registered_events %}
-    <ul>
-      {% for event_registration in registered_events %}
-        <li><a href="{% url 'event_detail' event_id=event_registration.event.id %}">{{ event_registration.event.name }}</a> ({{ event_registration.event.start_time|date:"d.m.Y H:i" }})</li>
+  <h2>Текущие мероприятия:</h2>
+  {% if current_events %}
+    <ul class="events-list">
+      {% for event_registration in current_events %}
+        <li>
+          <a href="{% url 'event_detail' event_id=event_registration.event.id %}">{{ event_registration.event.name }}</a>
+          <span class="event-time">({{ event_registration.event.start_time|date:"d.m.Y H:i" }})</span>
+        </li>
       {% endfor %}
     </ul>
   {% else %}
-    <p>Вы не зарегистрированы на мероприятия.</p>
+    <p>У вас нет текущих мероприятий.</p>
+  {% endif %}
+  
+  <h2>Прошедшие мероприятия:</h2>
+  {% if past_events %}
+    <ul class="events-list">
+      {% for event_registration in past_events %}
+        <li>
+          <a href="{% url 'archive_detail' event_id=event_registration.event.id %}">{{ event_registration.event.name }}</a>
+          <span class="event-time">({{ event_registration.event.start_time|date:"d.m.Y H:i" }})</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>У вас нет прошедших мероприятий.</p>
   {% endif %}
 {% endblock %}

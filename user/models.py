@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils import timezone
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -38,20 +39,16 @@ class Group(models.Model):
         verbose_name_plural = "Группы"
 
     def __str__(self):
-        return f"{self.name} ({self.institution.name if self.institution else 'No Institution'})"
+        return f"{self.fullname}"
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30, verbose_name="Имя")
     last_name = models.CharField(max_length=30, verbose_name="Фамилия")
-    patronymic = models.CharField(max_length=30, verbose_name="Отчество", 
-    	blank=True)
-    photo = models.ImageField(upload_to='profile_photos/', 
-    	verbose_name="Фото", blank=True, null=True)
-    group_student = models.ForeignKey(Group, on_delete=models.CASCADE, 
-    	verbose_name="Группа", related_name='profile_groups', 
-    	null=True, blank=True)
+    patronymic = models.CharField(max_length=30, verbose_name="Отчество", blank=True)
+    group_student = models.ForeignKey('Group', on_delete=models.CASCADE, verbose_name="Группа", related_name='profile_groups', null=True, blank=True)
+    year_of_admission = models.PositiveIntegerField(verbose_name="Год поступления", null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -67,3 +64,17 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.patronymic}"
+
+
+    def get_current_course(self):
+        if not self.year_of_admission:
+            return None
+        current_date = timezone.now()
+        current_year = current_date.year
+        current_month = current_date.month
+        
+        # Если месяц до сентября (включительно), уменьшить на один учебный год
+        if current_month < 9:
+            current_year -= 1
+        
+        return current_year - self.year_of_admission + 1

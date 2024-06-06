@@ -78,11 +78,11 @@
         {% for event in events %}
             <div class="event-post">
                 {% if event.image %}
-                    <a href="{% url 'event_detail' event.id %}">
+                    <a href="{% url 'archive_detail' event.id %}">
                         <img src="{{ event.image.url }}" alt="{{ event.name }}">
                     </a>
                 {% else %}
-                    <a href="{% url 'event_detail' event.id %}">
+                    <a href="{% url 'archive_detail' event.id %}">
                         <img src="{% static 'images/default_image.jpg' %}" alt="{{ event.name }}">
                     </a>
                 {% endif %}

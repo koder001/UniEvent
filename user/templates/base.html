@@ -7,20 +7,29 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block css %}{% endblock %}
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById('menu');
+            menu.classList.toggle('show');
+        }
+    </script>
 </head>
 <body>
     <div id="header">
-        <span class="logo">UniEvent</span>
+        <a href="/" class="logo">UniEvent</a>
         {% if request.user.is_authenticated %}
-            <ul class="menu">
+            <span class="menu-toggle" onclick="toggleMenu()">&#9776;</span>
+        {% endif %}
+        <ul id="menu" class="menu">
+            {% if request.user.is_authenticated %}
                 <li {% if section == "dashboard" %}class="selected"{% endif %}>
                     <a href="{% url 'dashboard' %}">Моя панель</a>
                 </li>
-                <li {% if section == "room_list" %}class="selected"{% endif %}>
-                    <a href="{% url 'room_list' %}">Помещения</a>
-                </li>
                 <li {% if section == "events" %}class="selected"{% endif %}>
                     <a href="{% url 'event_list' %}">Мероприятия</a>
+                </li>
+                <li {% if section == "room_list" %}class="selected"{% endif %}>
+                    <a href="{% url 'room_list' %}">Помещения</a>
                 </li>
                 <li {% if section == "archive" %}class="selected"{% endif %}>
                     <a href="{% url 'event_archive' %}">Архив</a>
@@ -32,17 +41,16 @@
                     <li {% if section == "create_event" %}class="selected"{% endif %}>
                         <a href="{% url 'create_event' %}">Создать мероприятие</a>
                     </li>
+                    <li {% if section == "admin" %}class="selected"{% endif %}>
+                        <a href="{% url 'admin:index' %}">Администрирование</a>
+                    </li>
                 {% endif %}
-            </ul>
-            <form class="user" method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                Привет, {{ request.user.first_name|default:request.user.email }},
-                <button type="submit">Выход</button>
-            </form>
-        {% else %}
-            <span class="user">
+            {% endif %}
+        </ul>
+        {% if not request.user.is_authenticated %}
+            <div class="user">
                 <a href="{% url 'login' %}">Вход</a>
-            </span>
+            </div>
         {% endif %}
     </div>
     <div id="content">

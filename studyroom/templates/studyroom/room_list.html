@@ -1,5 +1,7 @@
 {% extends "base.html" %}
-{% load static %}{% block css %}
+{% load static %}
+
+{% block css %}
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -7,12 +9,26 @@ body {
   margin: 0;
 }
 
+.locations-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.location {
+  margin-bottom: 40px;
+}
+
+.location h2 {
+  margin-bottom: 20px;
+  color: #417690;
+  font-size: 24px;
+}
+
 .rooms-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(5, 1fr); /* Пять колонок с равной шириной */
   gap: 15px;
-  max-width: 2400px;
-  margin: 0 auto;
 }
 
 .room {
@@ -51,26 +67,64 @@ body {
   color: #666;
 }
 
+/* Мобильная версия */
+@media (max-width: 1200px) {
+  .rooms-container {
+    grid-template-columns: repeat(4, 1fr); /* Четыре колонки с равной шириной */
+  }
+}
 
+@media (max-width: 992px) {
+  .rooms-container {
+    grid-template-columns: repeat(3, 1fr); /* Три колонки с равной шириной */
+  }
+}
+
+@media (max-width: 768px) {
+  .rooms-container {
+    grid-template-columns: repeat(2, 1fr); /* Две колонки с равной шириной */
+  }
+}
+
+@media (max-width: 576px) {
+  .rooms-container {
+    grid-template-columns: 1fr; /* Одна колонка с полной шириной */
+  }
+
+  .location h2 {
+    font-size: 20px; /* Уменьшение размера заголовка для мобильных устройств */
+  }
+
+  .room h3 {
+    font-size: 14px; /* Уменьшение размера текста для мобильных устройств */
+  }
+}
 </style>
 {% endblock %}
+
 {% block content %}
-  <h1>Залы</h1>
-  <div class="rooms-container">
-    {% if rooms %}
-      {% for room in rooms %}
-        <div class="room">
-          {% if room.photo %}
-            <div class="room-photo-container">
-              <img src="{{ room.photo.url }}" alt="{{ room.name }}" class="room-photo">
+<div class="locations-container">
+  {% if locations %}
+    {% for location, rooms in locations.items %}
+      <div class="location">
+        <h2>{{ location }}</h2>
+        <div class="rooms-container {% if rooms|length == 1 %}single-room{% endif %}">
+          {% for room in rooms %}
+            <div class="room">
+              {% if room.photo %}
+                <div class="room-photo-container">
+                  <img src="{{ room.photo.url }}" alt="{{ room.name }}" class="room-photo">
+                </div>
+              {% endif %}
+              <h3>{{ room.name }}</h3>
+              <p>До {{ room.capacity }} человек</p>
             </div>
-          {% endif %}
-          <h3>{{ room.name }}</h3>
-          <p>До {{ room.capacity }} человек</p>
+          {% endfor %}
         </div>
-      {% endfor %}
-    {% else %}
-      <p>Список пуст.</p>
-    {% endif %}
-  </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Список пуст.</p>
+  {% endif %}
+</div>
 {% endblock %}

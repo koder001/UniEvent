@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
@@ -76,10 +77,16 @@ def edit_profile(request):
 
 @login_required
 def dashboard(request):
-    registered_events = EventRegistration.objects.filter(user=request.user).order_by('event__start_time')
+    current_time = timezone.now()
+    registered_events = EventRegistration.objects.filter(user=request.user)
+    current_events = registered_events.filter(event__start_time__gte=current_time).order_by('event__start_time')
+    past_events = registered_events.filter(event__start_time__lt=current_time).order_by('-event__start_time')
+    
     return render(request,
                   'user/dashboard.html',
-                  {'section': 'dashboard', 'registered_events': registered_events})
+                  {'section': 'dashboard',
+                   'current_events': current_events,
+                   'past_events': past_events})
 @login_required
 def user_logout(request):
     logout(request)

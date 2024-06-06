@@ -142,6 +142,17 @@ def event_detail(request, event_id):
         'is_event_passed': is_event_passed,
     })
 
+def archive_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    is_event_passed = event.end_time < timezone.now()
+    is_registered = EventRegistration.objects.filter(user=request.user, event=event).exists()
+    
+    return render(request, 'event/archive_detail.html', {
+        'event': event,
+        'is_registered': is_registered,
+        'is_event_passed': is_event_passed,
+    })
+
 def event_unsubscribe(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     registration = EventRegistration.objects.filter(user=request.user, event=event)
