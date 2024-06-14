@@ -82,21 +82,24 @@
     }
 
     @media (max-width: 768px) {
+        .event-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
         .event-info img {
             width: 100%;
             max-width: none;
-            }
+        }
 
         .buttons-container {
-            justify-content: center; /* Center the buttons */
             flex-direction: column;
             align-items: center;
         }
 
-        .buttons-container a {
-            width: calc(100% - 40px); /* Ensure there's padding on both sides */
+        .buttons-container a, .buttons-container button {
+            width: calc(100% - 40px);
             text-align: center;
-            margin-bottom: 10px;
         }
     }
 </style>
@@ -167,7 +170,7 @@
             <ul>
                 {% for registration in event.registrations.all %}
                 <li>
-                    {{ registration.user }}{% if registration.user.group_student and registration.user.get_current_course%}, {{ registration.user.group_student.fullname }}, {{ registration.user.get_current_course }} курс{% endif %}
+                    {{ registration.user }}{% if registration.user.group_student and registration.user.get_current_course %}, {{ registration.user.group_student.fullname }}, {{ registration.user.get_current_course }} курс{% endif %}
                 </li>
                 {% endfor %}
             </ul>

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'favicon.png' %}">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block css %}{% endblock %}
     <script>
@@ -22,36 +23,34 @@
         {% endif %}
         <ul id="menu" class="menu">
             {% if request.user.is_authenticated %}
-                <li {% if section == "dashboard" %}class="selected"{% endif %}>
+                <li>
                     <a href="{% url 'dashboard' %}">Моя панель</a>
                 </li>
-                <li {% if section == "events" %}class="selected"{% endif %}>
+                <li>
                     <a href="{% url 'event_list' %}">Мероприятия</a>
                 </li>
-                <li {% if section == "room_list" %}class="selected"{% endif %}>
+                <li>
                     <a href="{% url 'room_list' %}">Помещения</a>
                 </li>
-                <li {% if section == "archive" %}class="selected"{% endif %}>
+                <li>
                     <a href="{% url 'event_archive' %}">Архив</a>
                 </li>
                 {% if request.user.is_staff %}
-                    <li {% if section == "scheduler" %}class="selected"{% endif %}>
-                        <a href="{% url 'create_recurring_event' %}">Расписание</a>
-                    </li>
-                    <li {% if section == "create_event" %}class="selected"{% endif %}>
+                    <li>
                         <a href="{% url 'create_event' %}">Создать мероприятие</a>
                     </li>
-                    <li {% if section == "admin" %}class="selected"{% endif %}>
+                    <li>
+                        <a href="{% url 'all_recurring_events' %}">Расписание</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'create_recurring_event' %}">Создать расписание</a>
+                    </li>
+                    <li>
                         <a href="{% url 'admin:index' %}">Администрирование</a>
                     </li>
                 {% endif %}
             {% endif %}
         </ul>
-        {% if not request.user.is_authenticated %}
-            <div class="user">
-                <a href="{% url 'login' %}">Вход</a>
-            </div>
-        {% endif %}
     </div>
     <div id="content">
         {% block content %}{% endblock %}

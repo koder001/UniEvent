@@ -70,6 +70,7 @@
         color: white;
         text-decoration: none;
         border-radius: 4px;
+        border: none; /* Removed border for consistency */
     }
 
     .buttons-container a:hover {
@@ -81,14 +82,23 @@
     }
 
     @media (max-width: 768px) {
+        .event-info {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .event-info img {
+            width: 100%;
+            max-width: none;
+        }
+
         .buttons-container {
-            justify-content: center; /* Center the buttons */
             flex-direction: column;
             align-items: center;
         }
 
         .buttons-container a {
-            width: calc(100% - 40px); /* Ensure there's padding on both sides */
+            width: calc(100% - 40px);
             text-align: center;
             margin-bottom: 10px;
         }
@@ -131,7 +141,7 @@
                 {% if is_registered %}
                     <p>Вы уже зарегистрированы на это мероприятие. <a href="{% url 'event_unsubscribe' event_id=event.id %}">Отписаться</a></p>
                 {% else %}
-                    <form method="post">
+                    <form method="post" class="buttons-container">
                         {% csrf_token %}
                         {{ form.as_p }}
                         <button type="submit">Зарегистрироваться</button>
@@ -161,7 +171,7 @@
             <ul>
                 {% for registration in event.registrations.all %}
                 <li>
-                    {{ registration.user }}{% if registration.user.group_student and registration.user.get_current_course%}, {{ registration.user.group_student.fullname }}, {{ registration.user.get_current_course }} курс{% endif %}
+                    {{ registration.user }}{% if registration.user.group_student and registration.user.get_current_course %}, {{ registration.user.group_student.fullname }}, {{ registration.user.get_current_course }} курс{% endif %}
                 </li>
                 {% endfor %}
             </ul>

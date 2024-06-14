@@ -1,8 +1,22 @@
 from django import forms
-from .models import Event
-from .models import EventRegistration
+from .models import Event, EventRegistration
+from studyroom.models import Location
+from user.models import UserProfile 
 
 class EventForm(forms.ModelForm):
+    organizer = forms.ModelChoiceField(
+        label='Организатор', 
+        queryset=UserProfile.objects.all(),
+        widget=forms.Select(attrs={'style': 'max-width: 30ch;'})
+    )
+
+
+    location = forms.ModelChoiceField(
+        label='Расположение', 
+        queryset=Location.objects.all(),
+        widget=forms.Select(attrs={'style': 'max-width: 40ch;'})
+    )
+
     class Meta:
         model = Event
         fields = ['organizer', 'name', 'description', 'image', 'start_time', 'end_time', 'location']

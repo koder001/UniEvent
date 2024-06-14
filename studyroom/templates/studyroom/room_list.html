@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}
+    Наши помещения
+{% endblock %}
+
 {% block css %}
 <style>
 body {
@@ -27,7 +31,7 @@ body {
 
 .rooms-container {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* Пять колонок с равной шириной */
+  grid-template-columns: repeat(5, 1fr); 
   gap: 15px;
 }
 
@@ -48,6 +52,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .room-photo {
@@ -63,6 +68,7 @@ body {
 }
 
 .room p {
+  padding: 0 10px; 
   margin: 0 0 10px;
   color: #666;
 }
@@ -70,34 +76,79 @@ body {
 /* Мобильная версия */
 @media (max-width: 1200px) {
   .rooms-container {
-    grid-template-columns: repeat(4, 1fr); /* Четыре колонки с равной шириной */
+    grid-template-columns: repeat(4, 1fr); 
   }
 }
 
 @media (max-width: 992px) {
   .rooms-container {
-    grid-template-columns: repeat(3, 1fr); /* Три колонки с равной шириной */
+    grid-template-columns: repeat(3, 1fr); 
   }
 }
 
 @media (max-width: 768px) {
   .rooms-container {
-    grid-template-columns: repeat(2, 1fr); /* Две колонки с равной шириной */
+    grid-template-columns: repeat(2, 1fr); 
   }
 }
 
 @media (max-width: 576px) {
   .rooms-container {
-    grid-template-columns: 1fr; /* Одна колонка с полной шириной */
+    grid-template-columns: 1fr; 
   }
 
   .location h2 {
-    font-size: 20px; /* Уменьшение размера заголовка для мобильных устройств */
+    font-size: 20px; 
   }
 
   .room h3 {
-    font-size: 14px; /* Уменьшение размера текста для мобильных устройств */
+    font-size: 14px; 
   }
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 90%;
+  width: auto;
+  max-height: 90%;
+  overflow: auto;
+}
+
+.modal-photo {
+  width: 100%;
+  height: auto;
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
 }
 </style>
 {% endblock %}
@@ -113,11 +164,12 @@ body {
             <div class="room">
               {% if room.photo %}
                 <div class="room-photo-container">
-                  <img src="{{ room.photo.url }}" alt="{{ room.name }}" class="room-photo">
+                  <img src="{{ room.photo.url }}" alt="{{ room.name }}" class="room-photo" onclick="openModal(this)">
                 </div>
               {% endif %}
               <h3>{{ room.name }}</h3>
               <p>До {{ room.capacity }} человек</p>
+              <p>{{ room.description }}</p>
             </div>
           {% endfor %}
         </div>
@@ -127,4 +179,25 @@ body {
     <p>Список пуст.</p>
   {% endif %}
 </div>
+
+<!-- Модальное окно для фото -->
+<div id="photoModal" class="modal">
+  <span class="close" onclick="closeModal()">&times;</span>
+  <img class="modal-content modal-photo" id="modalPhoto">
+</div>
+
+<script>
+function openModal(photo) {
+  var modal = document.getElementById("photoModal");
+  var modalPhoto = document.getElementById("modalPhoto");
+  modal.style.display = "block";
+  modalPhoto.src = photo.src;
+}
+
+function closeModal() {
+  var modal = document.getElementById("photoModal");
+  modal.style.display = "none";
+}
+</script>
+
 {% endblock %}

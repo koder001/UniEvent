@@ -1,5 +1,3 @@
-
-
 from django.db import models
 from studyroom.models import Room
 
@@ -34,3 +32,15 @@ class RecurringEvent(models.Model):
         verbose_name_plural = "Расписание"
     def __str__(self):
         return f"{self.get_weekday_display()} {self.start_time}-{self.end_time}"
+
+    def get_period(self):
+        periods = {
+            '09:00-10:30': '1',
+            '10:40-12:10': '2',
+            '13:00-14:30': '3',
+            '14:40-16:10': '4'
+        }
+
+        event_time = f"{self.start_time.strftime('%H:%M')}-{self.end_time.strftime('%H:%M')}"
+
+        return periods.get(event_time, None)

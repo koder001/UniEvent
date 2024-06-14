@@ -10,11 +10,13 @@
     max-width: 800px;
     margin: auto;
     padding: 20px;
+    font-family: Arial, sans-serif;
   }
 
   h1, h2 {
     text-align: center;
     margin-bottom: 20px;
+    color: #333;
   }
 
   .form-group {
@@ -44,10 +46,23 @@
     border: 1px solid #ddd;
     padding: 10px;
     text-align: center;
+    position: relative;
   }
 
   .schedule-table th {
     background-color: #f2f2f2;
+    color: #555;
+  }
+
+  .schedule-table td {
+    background-color: #fff;
+  }
+
+  .schedule-table td input[type="checkbox"] {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .btn {
@@ -63,8 +78,18 @@
     margin-top: 20px;
   }
 
+  @media (max-width: 600px) {
+    .schedule-table th, .schedule-table td {
+      padding: 8px;
+      font-size: 12px;
+    }
 
+    .schedule-table th {
+      font-size: 12px;
+    }
+  }
 </style>
+
 
 <div class="container">
   <h1>Создание циклического мероприятия</h1>
@@ -84,13 +109,13 @@
       <thead>
         <tr>
           <th></th>
-          <th>Понедельник</th>
-          <th>Вторник</th>
-          <th>Среда</th>
-          <th>Четверг</th>
-          <th>Пятница</th>
-          <th>Суббота</th>
-          <th>Воскресенье</th>
+          <th>Пн</th>
+          <th>Вт</th>
+          <th>Ср</th>
+          <th>Чт</th>
+          <th>Пт</th>
+          <th>Сб</th>
+          <th>Вс</th>
         </tr>
       </thead>
       <tbody>

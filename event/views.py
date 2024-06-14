@@ -107,7 +107,12 @@ def edit_event(request, event_id):
                 event.rooms.add(room)
             event.save()
 
-            return redirect('event_detail', event_id=event.id)
+            if event.end_time > timezone.now():
+                redirect_url = 'event_detail'
+            else:
+                redirect_url = 'archive_detail'
+
+            return redirect(redirect_url, event_id=event.id)
     else:
         event.start_time = event.start_time.strftime('%Y-%m-%dT%H:%M')
         event.end_time = event.end_time.strftime('%Y-%m-%dT%H:%M')

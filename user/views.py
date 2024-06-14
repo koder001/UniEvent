@@ -33,13 +33,6 @@ def user_login(request):
         form = LoginForm()
     return render(request, 'user/login.html', {'form': form})
 
-# Представление для отображения панели управления (требует аутентификации)
-@login_required
-def dashboard(request):
-    return render(request,
-                  'user/dashboard.html',
-                  {'section': 'dashboard'})
-
 # Регистрация нового пользователя
 def register(request):
     if request.method == 'POST':
@@ -74,7 +67,8 @@ def edit_profile(request):
         # Если запрос не POST, создается форма для редактирования профиля
         form = ProfileEditForm(instance=request.user)
     return render(request, 'user/edit_profile.html', {'form': form})
-
+    
+# Представление для отображения панели управления (требует аутентификации)
 @login_required
 def dashboard(request):
     current_time = timezone.now()

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Все циклические мероприятия{% endblock %}
+
+{% block content %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
+  h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 14px; /* Уменьшаем размер шрифта для мобильных устройств */
+  }
+
+  .schedule-table th, .schedule-table td {
+    border: 1px solid #ddd;
+    padding: 8px; /* Уменьшаем внутренний отступ ячеек */
+    text-align: center;
+  }
+
+  .schedule-table th {
+    background-color: #f8f8f8;
+    color: #555;
+  }
+
+  .schedule-table td {
+    background-color: #fff;
+    transition: background-color 0.3s;
+  }
+
+  .schedule-table td.checked {
+    background-color: #417690;
+    color: white;
+  }
+
+  .schedule-table caption {
+    caption-side: top;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .no-schedule {
+    text-align: center;
+    font-size: 1.2em;
+    color: #999;
+    margin-top: 50px;
+  }
+
+  @media (max-width: 600px) {
+    .schedule-table th, .schedule-table td {
+      padding: 6px; /* Уменьшаем внутренний отступ ячеек для мобильных устройств */
+      font-size: 12px; /* Дополнительно уменьшаем размер шрифта */
+    }
+    .schedule-table th {
+      font-size: 12px; /* Уменьшаем размер шрифта заголовков */
+    }
+  }
+</style>
+
+<div class="container">
+  <h1>Все циклические мероприятия</h1>
+  {% if grouped_events %}
+    {% for room_week_key, events in grouped_events.items %}
+    <table class="schedule-table">
+      <caption>Аудитория: {{ room_week_key.0 }} - {% if room_week_key.1 == 0 %}Первая неделя{% elif room_week_key.1 == 1 %}Вторая неделя{% else %}Обе недели{% endif %}</caption>
+      <thead>
+        <tr>
+          <th data-label="Время">Время</th>
+          <th data-label="Пн">Пн</th>
+          <th data-label="Вт">Вт</th>
+          <th data-label="Ср">Ср</th>
+          <th data-label="Чт">Чт</th>
+          <th data-label="Пт">Пт</th>
+          <th data-label="Сб">Сб</th>
+          <th data-label="Вс">Вс</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for period, times in periods.items %}
+        <tr>
+          <td data-label="Время">{{ times }}</td>
+          {% for day in days %}
+          <td data-label="{% if day == 'Понедельник' %}Пн{% elif day == 'Вторник' %}Вт{% elif day == 'Среда' %}Ср{% elif day == 'Четверг' %}Чт{% elif day == 'Пятница' %}Пт{% elif day == 'Суббота' %}Сб{% elif day == 'Воскресенье' %}Вс{% endif %}" class="{% for event in events %}{% if event.weekday == day and event.get_period == period %}checked{% endif %}{% endfor %}">
+            {% for event in events %}
+            {% if event.weekday == day and event.get_period == period %}
+            ✔
+            {% endif %}
+            {% endfor %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+  {% else %}
+    <div class="no-schedule">Расписаний нет</div>
+  {% endif %}
+</div>
+{% endblock %}
